@@ -1,0 +1,9 @@
+ul.menu-y
+  list-style-type: none
+  li, a
+    display: block
+
+ul.menu-x
+  list-style-type: none
+  li, a
+    display: inline-block
