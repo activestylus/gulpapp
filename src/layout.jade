@@ -1,0 +1,19 @@
+doctype html
+html
+  block vars
+    - title = 'My Fancy Title'
+    - navs = ['']
+  head
+    title #{title}
+    link(rel='stylesheet', href='/dist/assets/css/main.min.css')
+    script(type='text/javascript', src='/dist/assets/js/main.js')
+  body
+    header.wrap
+      #logo
+        text Company Name
+        small Incorporated
+    .wrap.body
+      block content
+      p #{title}
+    script.
+      init()

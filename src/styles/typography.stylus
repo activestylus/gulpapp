@@ -1,0 +1,485 @@
+$font-family = Arial, sans-serif !default // Non-font-face font-stack
+$font-weight =  normal !default
+$line-height = 1.65 !default
+$font-size   = 112.5 !default // percentage value (16 * 112.5% = 18px)
+$font-base   = 16 * ($font-size/100) !default // converts our percentage to a pixel value
+$measure     = $font-base * $line-height
+$custom-font-family = false !default // Custom font-face stack, if set will be added to the $font-family
+
+// Paragraphs
+$indent-val = 1.5em !default
+$paragraph-vertical-whitespace = false !default
+$small-print-size = 65% !default
+
+// Color
+$body-copy-color = #444 !default
+$heading-color = #222 !default
+
+// Ampersand
+// -------------------------------------//
+$amp-fontface-name = Georgia !default
+$amp-font-family = Verdana, sans-serif !default
+
+// $Variable $Typescale
+$tera    = 117 !default // 117 = 18 × 6.5
+$giga    = 90  !default // 90 = 18 × 5
+$mega    = 72  !default // 72 = 18 × 4
+$alpha   = 60  !default // 60 = 18 × 3.3333
+$beta    = 48  !default // 48 = 18 × 2.6667
+$gamma   = 36  !default // 36 = 18 × 2
+$delta   = 24  !default // 24 = 18 × 1.3333
+$epsilon = 21  !default // 21 = 18 × 1.1667
+$zeta    = 18  !default // 18 = 18 × 1
+
+// Typescale-Unit
+$type-scale-unit-value = rem !default
+
+// Pull-Quotes
+$pull-quote-fontsize = 4em !default
+$pull-quote-opacity = 0.5 !default
+$pull-quote-color = #dc976e !default
+
+// Citation
+$cite-display = block !default
+$cite-text-align = right !default
+$cite-font-size = inherit !default
+
+// Small-Caps
+$small-caps-color = gray !default
+$small-caps-weight = 600 !default
+
+// DropCap
+$dropcap-float-position = left !default
+$dropcap-font-size = 4em !default
+$dropcap-font-family = inherit !default
+$dropcap-txt-indent = 0 !default
+$dropcap-margin = inherit !default
+$dropcap-padding = inherit !default
+$dropcap-color = inherit !default
+$dropcap-line-height = 1 !default
+$dropcap-bg = transparent !default
+
+// Context Calculator
+// divide a given font-size by base font-size & return a relative value
+context-calc(scale, base, value)
+  size = scale/base
+  unit(size,value)
+
+// Measure-Margin
+// divide 1 unit of measure by given font-size & return a relative em value
+measure-margin(scale, measure, value)
+  size = measure/scale
+  unit(size,value)
+
+type-scale(scale, base, value, measure = "")
+  if value == "rem"
+    font-size: unit(scale,px)
+  font-size: context-calc(scale, base, value)
+  if measure != ""
+    margin-bottom: measure-margin(scale, measure, value)
+
+
+// Hypens
+// Accepted values: [ none | manual | auto ]
+css-hyphens(val)
+  -webkit-hyphens: val
+  -moz-hyphens: val
+  -ms-hyphens: val
+  -o-hyphens: val
+  hyphens: val
+
+// Smallcaps (depends on the font family)
+smallcaps($color, $font-weight)
+  font-variant: small-caps
+  font-weight: $font-weight
+  text-transform: lowercase
+  color: $color
+
+// Ampersand
+ampersand($amp-font-family) 
+  font-family: $amp-font-family
+.amp
+  ampersand($amp-fontface-name, $amp-font-family)
+
+// Blockquote
+// Use our pre-defined markup and add a class
+// to your custom blockquote element.
+// For example:
+// .blockquote { blockquote("-"); }
+//
+// "-" is your citation flourish. For example:
+//
+// I always say important things because I'm so smart
+//                           - Super Important Person
+
+cite-style($display, $text-align, $font-size) 
+  display: $display
+  font-size: $font-size
+  text-align: $text-align
+
+.cite
+  cite-style($cite-display, $cite-text-align, $cite-font-size)
+
+blockquote($citation-flourish)
+  p
+    &:last-of-type
+      margin-bottom: unit(-($line-height/2),em)
+  + figcaption
+    @extend .cite
+    &:before
+      content: $citation-flourish
+
+// Pull-Quotes
+pull-quotes($pull-quote-fontsize, $pull-quote-opacity, $pull-quote-color) {
+  position: relative;
+  padding: context-calc($pull-quote-fontsize, $pull-quote-fontsize, em);
+  &:before,
+  &:after {
+    height: context-calc($pull-quote-fontsize, $pull-quote-fontsize, em);
+    opacity: $pull-quote-opacity;
+    position: absolute;
+    font-size: $pull-quote-fontsize;
+    color: $pull-quote-color;
+  }
+  &:before {
+    content: '“';
+    top:  0;
+    left: 0;
+  }
+  &:after {
+    content: '”';
+    bottom: 0;
+    right: 0;
+  }
+}
+
+
+// $Placeholder $Wordwrap
+// -------------------------------------//
+// Silent Sass Classes - A.K.A Placeholders
+//
+// normal: Indicates that lines may only break at normal word break points.
+// break-word : Indicates that normally unbreakable words may be broken at
+// arbitrary points if there are no otherwise acceptable break points in the line.
+
+.breakword {
+  word-wrap: break-word;
+}
+
+.normal-wrap {
+  word-wrap: normal;
+}
+
+.inherit-wrap {
+  word-wrap: auto;
+}
+
+
+// $Mixin $Dropcaps
+// -------------------------------------//
+/**
+ * Dropcap Sass @include
+ * Use the following Sass with any selector you feel necessary.
+ *
+  dropcap($dropcap-float-position, $dropcap-font-size, $dropcap-font-family, $dropcap-txt-indent, $dropcap-margin, $dropcap-padding, $dropcap-color, $dropcap-line-height, $dropcap-bg);
+ *
+ * Extend this object into your custom stylesheet. Let the variables do the work.
+ *
+ */
+
+// Use dropcap($dropcap-float-position, $dropcap-font-size, $dropcap-font-family, $dropcap-txt-indent, $dropcap-margin, $dropcap-padding, $dropcap-color, $dropcap-line-height, $dropcap-bg);
+// to pass the following arguments below. Feel free to pass in custom
+// values for the variables we've provided.
+//
+// Make sure you add the class “drop-cap” to your markup in order to operate.
+dropcap($dropcap-float-position, $dropcap-font-size, $dropcap-font-family, $dropcap-txt-indent, $dropcap-margin, $dropcap-padding, $dropcap-color, $dropcap-line-height, $dropcap-bg) {
+  &:first-letter {
+    float: $dropcap-float-position;
+    margin: $dropcap-margin;
+    padding: $dropcap-padding;
+    font-size: $dropcap-font-size;
+    font-family: $dropcap-font-family;
+    line-height: $dropcap-line-height;
+    text-indent: $dropcap-txt-indent;
+    background: $dropcap-bg;
+    color: $dropcap-color;
+  }
+}
+
+// $Mixin $Codeblocks
+// -------------------------------------//
+
+white-space($wrap-space)
+  if $wrap-space == pre-wrap
+    white-space: s('-webkit-%s', $wrap-space)
+    white-space: $wrap-space
+  else
+    white-space: $wrap-space
+
+// $Mixin $Definition-Lists
+// -------------------------------------//
+// lining
+// http://lea.verou.me/2012/02/flexible-multiline-definition-lists-with-2-lines-of-css
+//
+// dictionary-style
+// http://lea.verou.me/2012/02/flexible-multiline-definition-lists-with-2-lines-of-css
+
+definition-list-style($style)
+  if $style == lining
+    dt, dd
+      display: inline
+      margin: 0
+    dt, dd
+      & + dt
+        &:before
+          content: "\A"
+          white-space: pre
+    dd
+      & + dd
+        &:before
+          content: ", "
+      &:before
+        content: ": "
+        margin-left: -0.2rem
+  if $style == dictionary-style 
+    dt 
+      display: inline
+      counter-reset: definitions
+      & + dt 
+        &:before 
+          content: ", "
+          margin-left: -0.2rem
+    dd
+      display: block
+      counter-increment: definitions
+      &:before
+        content: counter(definitions, decimal) ". "
+
+// .x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x //
+//
+// $Typeplate Styles
+//
+// .x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x //
+
+
+// $Styles $Globals
+// -------------------------------------//
+
+html
+  font-size: unit($font-size,'%')
+  font-weight: $font-weight
+  line-height: $line-height
+  if $custom-font-family
+    font-family: $custom-font-family, $font-family
+  else
+    font-family: $font-family
+
+body
+  // Ala Trent Walton
+  css-hyphens(auto)
+  // normal: Indicates that lines may only break at normal word break points.
+  // break-word : Indicates that normally unbreakable words may be broken at ...
+  // arbitrary points if there are no otherwise acceptable break points in the line.
+  @extend .breakword
+  color: $body-copy-color
+
+small { font-size: $small-print-size; }
+
+
+// $Styles $Headings
+// -------------------------------------//
+
+// Extend included classes on any element of your
+// choosing for adjusting type based on the scale
+// provided.
+
+// For example:
+
+// <h6 class="giga">Awesome Headline</h6>
+// <p class="tera">a story about a dude</p>
+
+// Our Type Scale is as follows with px fallbacks
+// for IE 6-8 as they do not understand REM units.
+//
+// 18, 21, 24, 36, 48, 60, 72, 90, 117
+
+// styles for all headings, in the style of @csswizardry
+.hN {
+  text-rendering: optimizeLegibility; // voodoo to enable ligatures and kerning
+  line-height: 1; // this fixes huge spaces when a heading wraps onto two lines
+  margin-top: 0;
+}
+
+$sizes = {
+  tera: $tera,
+  giga: $giga,
+  mega: $mega,
+  alpha: $alpha,
+  beta: $beta,
+  gamma: $gamma,
+  delta: $delta,
+  epsilon: $epsilon,
+  zeta:$zeta
+}
+
+// Sass loop to associate h1-h6 tags with their appropriate greek
+// heading based on a modular scale.
+// for each size in the scale, create a class
+for key, value in $sizes
+  .{key}
+    type-scale(value, $font-base, $type-scale-unit-value, $measure)
+
+// associate h1-h6 tags with their appropriate greek heading
+h1,h2,h3,h4,h5,h6
+  @extend .hN
+h1
+  @extend .alpha
+h2
+  @extend .beta
+h3
+  @extend .gamma
+h4
+  @extend .delta
+h5
+  @extend .epsilon
+h6
+  @extend .zeta
+
+// $Styles $Parargraphs
+// -------------------------------------//
+p
+  margin: auto auto $indent-val;
+  // Conditonal Check For Paragraph Styling
+  if $paragraph-vertical-whitespace == false
+    & + p
+      //siblings indentation
+      text-indent: $indent-val
+      margin-top: -$indent-val
+
+// Hyphenation
+// http://meyerweb.com/eric/thoughts/2012/12/17/where-to-avoid-css-hyphenation
+abbr,acronym,blockquote,code,dir,kbd,listing,plaintext,q,samp,tt,var, xmp { css-hyphens(none) }
+
+// Codeblocks
+pre code
+  @extend .normal-wrap
+  white-space('pre-wrap')
+pre { white-space('pre') }
+code { white-space('pre'); font-family: monospace; }
+
+
+// $Styles $Smallcaps
+// -------------------------------------//
+/**
+ * Abbreviations Markup
+ *
+  <abbr title="hyper text markup language">HMTL</abbr>
+ *
+ * Extend this object into your markup.
+ *
+ */
+abbr
+  smallcaps($small-caps-color, $small-caps-weight)
+  &[title]:hover
+    cursor: help
+
+// Headings-Color
+h1,h2,h3,h4,h5,h6 { color: $heading-color; }
+
+// Dropcap
+// Combats our sibling paragraphs styling and indentation
+// As not to ruin our beautiful drop caps.
+p + .drop-cap { text-indent: 0; margin-top: 0; }
+.drop-cap
+  dropcap($dropcap-float-position, $dropcap-font-size, $dropcap-font-family, $dropcap-txt-indent, $dropcap-margin, $dropcap-padding, $dropcap-color, $dropcap-line-height, $dropcap-bg)
+
+
+// Lining Definition Style Markup
+//
+//<dl class="lining">
+//  <dt><b></b></dt>
+//  <dd></dd>
+//</dl>
+//
+.lining {
+  definition-list-style(lining);
+}
+
+//
+// Dictionary Definition Style Markup
+//
+//<dl class="dictionary-style">
+//  <dt><b></b></dt>
+//    <dd></dd>
+//</dl>
+//
+// Extend this object into your markup.
+//
+//
+.dictionary-style {
+  definition-list-style(dictionary-style);
+}
+
+//Blockquote Markup
+//
+// <figure>
+//   <blockquote cite="">
+//     <p></p>
+//   </blockquote>
+//   <figcaption>
+//     <cite>
+//       <small><a href=""></a></small>
+//     </cite>
+//   </figcaption>
+// </figure>
+//
+// Extend this object into your markup.
+//
+//
+
+// Pull Quotes Markup
+//
+//<aside class="pull-quote">
+//  <blockquote>
+//    <p></p>
+//  </blockquote>
+//</aside>
+.pull-quote {
+   pull-quotes($pull-quote-fontsize, $pull-quote-opacity, $pull-quote-color);
+}
+
+
+// Figures
+
+//<figure>
+//  <figcaption>
+//    <strong>Fig. 4.2 | </strong>Type Anatomy, an excerpt from Mark Boulton's book<cite title="http://designingfortheweb.co.uk/book/part3/part3_chapter11.php">"Designing for the Web"</cite>
+//  </figcaption>
+//</figure>
+
+// Footnote Markup : Replace 'X' with your unique number for each footnote
+
+//<article>
+//  <p><sup><a href="#fn-itemX" id="fn-returnX"></a></sup></p>
+//  <footer>
+//    <ol class="foot-notes">
+//      <li id="fn-itemX"><a href="#fn-returnX">↩</a></li>
+//    </ol>
+//  </footer>
+//</article>
+file(name, ext, path)
+  path + '/' + name + '.' + ext
+
+font-face(family, font=family, path='fonts')
+  @font-face
+    font-family family
+    src url(file(font, 'eot', path))
+    src url(file(font, 'eot?#iefix', path)) format("embedded-opentype"),
+      url(file(font, 'woff', path)) format("woff"),
+      url(file(font, 'ttf', path)) format("truetype"),
+      url(file(font, 'svg#' + family, path)) format("svg")
+    font-weight normal
+    font-style normal
+
+if $custom-font-family
+  font-face $custom-font-family
