@@ -1,1 +1,6 @@
-npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-clean gulp-notify gulp-rename gulp-livereload tiny-lr gulp-cache gulp-filesize gulp-using gulp-newer --save-dev
+Just a quick starter project with Gulp.js
+
+* Stylus
+* Coffeescript
+* Jade Templates
+* Image compression
